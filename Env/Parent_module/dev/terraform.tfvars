@@ -66,7 +66,10 @@ network_security_group = {
     location            = "Japan West"
     resource_group_name = "app-resource-group-1"
   }
-}
+  
+  }
+
+
 
 public_ip = {
   "pip1" = {
