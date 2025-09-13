@@ -31,6 +31,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     echo "<h1>Hello from $(hostname) - Installed via Custom Data</h1>" > /var/www/html/index.html
   EOF
   )
+  
 
 
   source_image_reference {
