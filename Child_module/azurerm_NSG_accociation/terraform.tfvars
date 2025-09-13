@@ -10,4 +10,6 @@ network_interface_security_group_association = {
     nsg_name = "NSGTestSecurityGroup2"
     rg_name  = "app-resource-group-1"
   }
+
+  
 }
