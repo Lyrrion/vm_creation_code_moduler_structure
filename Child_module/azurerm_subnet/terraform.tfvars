@@ -13,8 +13,8 @@ subnet = {
     address_prefixes     = ["10.0.0.128/26"]
   }
 
-  "bastion_subnet" = {
-    name                 = "AzureBastionSubnet"
+  AzureBastionSubnet = {
+    name                 = AzureBastionSubnet
     resource_group_name  = "app-resource-group-1"
     virtual_network_name = "app-vnet-1"
     address_prefixes     = ["10.0.0.192/26"]    
