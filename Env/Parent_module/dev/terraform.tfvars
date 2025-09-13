@@ -102,9 +102,22 @@ network_interface = {
     vnet_name           = "app-vnet-1"
 
 
-  }
+ }
+  interface_3 = {
+    name                = "frontend-nic1"
+    location            = "Japan West"
+    resource_group_name = "app-resource-group-1"
+    subnet_name         = "frontend-subnet-1"
+    vnet_name           = "app-vnet-1"
 }
-
+   interface_4 = {
+    name                = "backend-nic1"
+    location            = "Japan West"
+    resource_group_name = "app-resource-group-1"
+    subnet_name         = "backend-subnet-1"
+    vnet_name           = "app-vnet-1"
+   }
+}
 
 network_interface_security_group_association = {
   frontend = {
@@ -118,6 +131,18 @@ network_interface_security_group_association = {
     nsg_name = "NSGTestSecurityGroup2"
     rg_name  = "app-resource-group-1"
   }
+
+  frontend1 = {
+    nic_name = "frontend-nic1"
+    nsg_name = "NSGTestSecurityGroup1"
+    rg_name  = "app-resource-group-1"
+  }
+  backend1 = {
+    nic_name = "backend-nic1"
+    nsg_name = "NSGTestSecurityGroup2"
+    rg_name  = "app-resource-group-1"
+  }
+
 }
 
 
@@ -145,7 +170,7 @@ linux_virtual_machine = {
     name                = "app-vm-1"
     location            = "Japan West"
     resource_group_name = "app-resource-group-1"
-    size                = "Standard_D2s_v3"
+    size                = "Standard_A1_v2"
     nic_key             = "interface_1"
   }
 
@@ -153,11 +178,29 @@ linux_virtual_machine = {
     name                = "app-vm-2"
     location            = "Japan West"
     resource_group_name = "app-resource-group-1"
-    size                = "Standard_D2s_v3"
+    size                = "Standard_A1_v2"
     nic_key             = "interface_2"
 
   }
 
-  
+  "vm3" = {
+    name                = "app-vm-3"
+    location            = "Japan West"
+    resource_group_name = "app-resource-group-1"
+    size                = "Standard_A1_v2"
+    nic_key             = "interface_3"
+
+  }
+
+  "vm4" = {
+    name                = "app-vm-4"
+    location            = "Japan West"
+    resource_group_name = "app-resource-group-1"
+    size                = "Standard_A1_v2"
+    nic_key             = "interface_4"
+
+  }
+
+
 }
 

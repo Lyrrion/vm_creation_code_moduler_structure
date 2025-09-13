@@ -16,7 +16,7 @@ resource "azurerm_network_interface" "nic" {
   }
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
