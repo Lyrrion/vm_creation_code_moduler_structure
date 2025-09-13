@@ -7,6 +7,7 @@ variable "bastion_host" {
     virtual_network_name = string
     subnet_name           = string
     public_ip_name        = string
+    
   }))
   
 }

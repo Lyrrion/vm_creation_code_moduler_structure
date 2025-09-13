@@ -44,12 +44,12 @@ subnet = {
     address_prefixes     = ["10.0.0.128/26"]
   }
 
-  "bastion_subnet" = {
+  "AzureBastionSubnet" = {
     name                 = "AzureBastionSubnet"
     resource_group_name  = "app-resource-group-1"
     virtual_network_name = "app-vnet-1"
-    address_prefixes     = ["10.0.0.192/26"]
-  }
+    address_prefixes     = ["10.0.0.192/26"]    
+}
 
 }
 
@@ -66,8 +66,8 @@ network_security_group = {
     location            = "Japan West"
     resource_group_name = "app-resource-group-1"
   }
-  
-  }
+
+}
 
 
 
@@ -126,9 +126,9 @@ bastion_host = {
     name                 = "bastion_1"
     location             = "Japan West"
     resource_group_name  = "app-resource-group-1"
-    virtual_network_name = "vnet-1"
+    virtual_network_name = "app-vnet-1"
     subnet_name          = "AzureBastionSubnet"
-    public_ip_name       = "bastion1-pip"
+    public_ip_name       = "bastionpip"
   }
 }
 
@@ -145,7 +145,7 @@ linux_virtual_machine = {
     name                = "app-vm-1"
     location            = "Japan West"
     resource_group_name = "app-resource-group-1"
-    size                = "Standard_B2s"
+    size                = "Standard_D2s_v3"
     nic_key             = "interface_1"
   }
 
@@ -153,9 +153,11 @@ linux_virtual_machine = {
     name                = "app-vm-2"
     location            = "Japan West"
     resource_group_name = "app-resource-group-1"
-    size                = "Standard_B2s"
+    size                = "Standard_D2s_v3"
     nic_key             = "interface_2"
 
   }
+
+  
 }
 

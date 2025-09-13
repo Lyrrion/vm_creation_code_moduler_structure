@@ -6,6 +6,6 @@ resource "azurerm_subnet" "example" {
   address_prefixes     = each.value.address_prefixes
 
     lifecycle {
-        prevent_destroy = true
+        prevent_destroy = false
   }
 }

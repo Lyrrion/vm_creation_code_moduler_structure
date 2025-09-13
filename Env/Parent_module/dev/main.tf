@@ -60,17 +60,18 @@ module "key_vault" {
   depends_on = [module.app_rg]
 }
 
-module "key_secret" {
-  source     = "../../../Child_module/azurerm_key_secret"
-  depends_on = [module.key_vault]
-}
+# module "key_secret" {
+#   source     = "../../../Child_module/azurerm_key_secret"
+#   depends_on = [module.key_vault]
+# }
+
 
 module "virtual_machine" {
   source                = "../../../Child_module/azurerm_virtual_machine"
   linux_virtual_machine = var.linux_virtual_machine
   network_interface     = var.network_interface
   nic_ids               = module.nic.nic_ids
-  depends_on            = [module.nic, module.key_secret, module.nsg_association, module.bastion_host, module.key_vault, module.app_rg, module.vnet, module.subnet]
+  depends_on            = [module.nic, module.nsg_association, module.bastion_host, module.key_vault, module.app_rg, module.vnet, module.subnet]
 }
 
 
