@@ -4,7 +4,7 @@ variable "virtual_network" {
     address_space       = list(string)
     location            = string
     resource_group_name = string
-    dns_servers         = list(string)
+    
   }))
   
 }

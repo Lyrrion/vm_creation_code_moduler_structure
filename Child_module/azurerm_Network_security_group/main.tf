@@ -17,6 +17,18 @@ resource "azurerm_network_security_group" "NSG_1" {
     destination_address_prefix = "*"
   }
 
+    security_rule {
+    name                       = "AllowInternetOutBound"
+    priority                   = 100
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "Internet"
+  }
+
   tags = {
     environment = "Production"
   }

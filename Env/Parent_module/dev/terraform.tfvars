@@ -4,7 +4,7 @@ subscription_id = "e8e67e49-af5a-4a37-abc9-4599917aee83"
 resource_group = {
   rg1 = {
     name     = "app-resource-group-1"
-    location = "Japan West"
+    location = "australia east"
   }
 
 }
@@ -13,7 +13,7 @@ storage_account = {
   "stg1" = {
     name                     = "app01storageaccount"
     resource_group_name      = "app-resource-group-1"
-    location                 = "Japan West"
+    location                 = "australia east"
     account_tier             = "Standard"
     account_replication_type = "GRS"
   }
@@ -23,9 +23,8 @@ virtual_network = {
   "vnet1" = {
     name                = "app-vnet-1"
     address_space       = ["10.0.0.0/16"]
-    location            = "Japan West"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
-    dns_servers         = ["10.0.0.4", "10.0.0.5"]
   }
 }
 
@@ -57,13 +56,25 @@ subnet = {
 network_security_group = {
   "nsg1" = {
     name                = "NSGTestSecurityGroup1"
-    location            = "Japan West"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
   }
 
   "nsg2" = {
     name                = "NSGTestSecurityGroup2"
-    location            = "Japan West"
+    location            = "australia east"
+    resource_group_name = "app-resource-group-1"
+  }
+  
+  "nsg3" = {
+    name                = "NSGTestSecurityGroup3"
+    location            = "australia east"
+    resource_group_name = "app-resource-group-1"
+  }
+  
+  "nsg4" = {
+    name                = "NSGTestSecurityGroup4"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
   }
 
@@ -74,7 +85,7 @@ network_security_group = {
 public_ip = {
   "pip1" = {
     name                = "bastionpip"
-    location            = "Japan West"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
     allocation_method   = "Static"
     sku                 = "Standard"
@@ -88,7 +99,7 @@ network_interface = {
 
   interface_1 = {
     name                = "frontend-nic"
-    location            = "Japan West"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
     subnet_name         = "frontend-subnet-1"
     vnet_name           = "app-vnet-1"
@@ -96,7 +107,7 @@ network_interface = {
   }
   interface_2 = {
     name                = "backend-nic"
-    location            = "Japan West"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
     subnet_name         = "backend-subnet-1"
     vnet_name           = "app-vnet-1"
@@ -105,14 +116,14 @@ network_interface = {
  }
   interface_3 = {
     name                = "frontend-nic1"
-    location            = "Japan West"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
     subnet_name         = "frontend-subnet-1"
     vnet_name           = "app-vnet-1"
 }
    interface_4 = {
     name                = "backend-nic1"
-    location            = "Japan West"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
     subnet_name         = "backend-subnet-1"
     vnet_name           = "app-vnet-1"
@@ -134,12 +145,12 @@ network_interface_security_group_association = {
 
   frontend1 = {
     nic_name = "frontend-nic1"
-    nsg_name = "NSGTestSecurityGroup1"
+    nsg_name = "NSGTestSecurityGroup3"
     rg_name  = "app-resource-group-1"
   }
   backend1 = {
     nic_name = "backend-nic1"
-    nsg_name = "NSGTestSecurityGroup2"
+    nsg_name = "NSGTestSecurityGroup4"
     rg_name  = "app-resource-group-1"
   }
 
@@ -149,7 +160,7 @@ network_interface_security_group_association = {
 bastion_host = {
   "bastion_1" = {
     name                 = "bastion_1"
-    location             = "Japan West"
+    location             = "australia east"
     resource_group_name  = "app-resource-group-1"
     virtual_network_name = "app-vnet-1"
     subnet_name          = "AzureBastionSubnet"
@@ -159,8 +170,8 @@ bastion_host = {
 
 key_vault = {
   "myvm" = {
-    name                = "app-sujitvault-01"
-    location            = "Japan West"
+    name                = "app-sujitvault-02"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
   }
 }
@@ -168,26 +179,26 @@ key_vault = {
 linux_virtual_machine = {
   "vm1" = {
     name                = "app-vm-1"
-    location            = "Japan West"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
-    size                = "Standard_A1_v2"
+    size                = "Standard_B1s"
     nic_key             = "interface_1"
   }
 
   "vm2" = {
     name                = "app-vm-2"
-    location            = "Japan West"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
-    size                = "Standard_A1_v2"
+    size                = "Standard_B1s"
     nic_key             = "interface_2"
 
   }
 
   "vm3" = {
     name                = "app-vm-3"
-    location            = "Japan West"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
-    size                = "Standard_A1_v2"
+    size                = "Standard_B1s"
     nic_key             = "interface_3"
 
   }
@@ -196,7 +207,7 @@ linux_virtual_machine = {
     name                = "app-vm-4"
     location            = "Japan West"
     resource_group_name = "app-resource-group-1"
-    size                = "Standard_A1_v2"
+    size                = "Standard_B1s"
     nic_key             = "interface_4"
 
   }
