@@ -13,6 +13,7 @@ variable "resource_group" {
     location = string
   }))
 }
+# bhai yeah test hai
 
 variable "storage_account" {
   type = map(object({
