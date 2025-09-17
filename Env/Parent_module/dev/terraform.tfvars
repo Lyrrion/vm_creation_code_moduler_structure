@@ -1,5 +1,5 @@
-tenant_id       = "4219d509-5517-451d-8c28-e650b1f915aa" # Can also be set via `ARM_TENANT_ID` environment variable.
-subscription_id = "e8e67e49-af5a-4a37-abc9-4599917aee83"
+tenant_id       = "b88318e4-51e5-4953-b3e1-6f8df1d990ce" # Can also be set via `ARM_TENANT_ID` environment variable.
+subscription_id = "c3408e32-e222-42c2-8c6d-9edc55d79da8"
 
 resource_group = {
   rg1 = {
@@ -11,7 +11,7 @@ resource_group = {
 
 storage_account = {
   "stg1" = {
-    name                     = "app01storageaccount"
+    name                     = "app01storageaccount121"
     resource_group_name      = "app-resource-group-1"
     location                 = "australia east"
     account_tier             = "Standard"
@@ -47,8 +47,16 @@ subnet = {
     name                 = "AzureBastionSubnet"
     resource_group_name  = "app-resource-group-1"
     virtual_network_name = "app-vnet-1"
-    address_prefixes     = ["10.0.0.192/26"]    
-}
+    address_prefixes     = ["10.0.0.192/26"]
+  }
+
+  "ApplicationGatway" = {
+    name                 = "ApplicationGatway"
+    resource_group_name  = "app-resource-group-1"
+    virtual_network_name = "app-vnet-1"
+    address_prefixes     = ["10.0.0.0/26"]
+  }
+
 
 }
 
@@ -65,13 +73,13 @@ network_security_group = {
     location            = "australia east"
     resource_group_name = "app-resource-group-1"
   }
-  
+
   "nsg3" = {
     name                = "NSGTestSecurityGroup3"
     location            = "australia east"
     resource_group_name = "app-resource-group-1"
   }
-  
+
   "nsg4" = {
     name                = "NSGTestSecurityGroup4"
     location            = "australia east"
@@ -113,21 +121,21 @@ network_interface = {
     vnet_name           = "app-vnet-1"
 
 
- }
+  }
   interface_3 = {
     name                = "frontend-nic1"
     location            = "australia east"
     resource_group_name = "app-resource-group-1"
     subnet_name         = "frontend-subnet-1"
     vnet_name           = "app-vnet-1"
-}
-   interface_4 = {
+  }
+  interface_4 = {
     name                = "backend-nic1"
     location            = "australia east"
     resource_group_name = "app-resource-group-1"
     subnet_name         = "backend-subnet-1"
     vnet_name           = "app-vnet-1"
-   }
+  }
 }
 
 network_interface_security_group_association = {
@@ -170,7 +178,7 @@ bastion_host = {
 
 key_vault = {
   "myvm" = {
-    name                = "app-sujitvault-02"
+    name                = "app-sujitvault-07"
     location            = "australia east"
     resource_group_name = "app-resource-group-1"
   }
@@ -205,7 +213,7 @@ linux_virtual_machine = {
 
   "vm4" = {
     name                = "app-vm-4"
-    location            = "Japan West"
+    location            = "australia east"
     resource_group_name = "app-resource-group-1"
     size                = "Standard_B1s"
     nic_key             = "interface_4"
