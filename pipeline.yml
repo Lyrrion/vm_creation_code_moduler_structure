@@ -1,0 +1,248 @@
+trigger: 
+ branches:
+    include:
+      - main
+      - feature/*
+
+pool : Agnet_Infra 
+
+variables: 
+  Source_Code : "$(System.DefaultWorkingDirectory)/Env/Parent_module/dev/"
+  TF_VERSION : '1.8.5'
+  Enviorment : 'Dev'
+
+parameters:
+  - name: tfKey
+    type: string
+    default: 'dev.terraform.tfstate'
+    displayName: "Select Terraform Key"
+    values:
+      - dev.terraform.tfstate
+      - stage.terraform.tfstate
+      - prod.terraform.tfstate
+
+  - name: runDestroy
+    type: boolean
+    displayName: "Run Terraform Destroy?"
+    default: false
+    values:
+      - true
+
+
+stages:
+  - stage: TF_Intsall_and_Init 
+    displayName: Terraform Installation and Initalisation
+    jobs:
+      - job: TF_Install
+        displayName: Terraform Tool Install
+        steps:
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: '$(TF_VERSION)'
+
+
+      - job: TF_Init
+        displayName: TF_Initalisation
+        dependsOn: TF_Install
+        steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Parent_module/dev/'
+            backendServiceArm: 'Infra_Project'
+            backendAzureRmStorageAccountName: 'stgsujitbackend'
+            backendAzureRmContainerName: 'tfstatebackend'
+            backendAzureRmKey: '${{ parameters.tfKey }}'
+
+
+  - stage: TF_Init_Validate_and_Fmt 
+    dependsOn: TF_Intsall_and_Init 
+    jobs:
+      - job: TF_Init_2
+        displayName: TF_Iniisation ,FMT and Validate
+        steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Parent_module/dev/'
+            backendServiceArm: 'Infra_Project'
+            backendAzureRmStorageAccountName: 'stgsujitbackend'
+            backendAzureRmContainerName: 'tfstatebackend'
+            backendAzureRmKey: '${{ parameters.tfKey }}'
+        
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Parent_module/dev/'
+
+        
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'custom'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Parent_module/dev/'
+            outputTo: 'console'
+            customCommand: 'fmt'
+            environmentServiceNameAzureRM: 'Infra_Project'
+
+  - stage: TF_Init_and_Scanning
+    dependsOn: TF_Init_Validate_and_Fmt 
+    jobs:
+      - job: TF_Init_3
+        displayName: TF_Init_Scan
+        steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Parent_module/dev/'
+            backendServiceArm: 'Infra_Project'
+            backendAzureRmStorageAccountName: 'stgsujitbackend'
+            backendAzureRmContainerName: 'tfstatebackend'
+            backendAzureRmKey: '${{ parameters.tfKey }}'
+
+      - job: TF_Sec
+        dependsOn: TF_Init_3
+        displayName: Tfsec
+        steps:
+        - task: tfsec@1
+          inputs:
+            version: 'v1.26.0'
+            debug: true
+            dir: '$(System.DefaultWorkingDirectory)/Env/Parent_module/dev'
+
+      - job: Pip_install
+        dependsOn: TF_Sec
+        condition: succeededOrFailed()
+        steps: 
+        - task: UsePythonVersion@0
+          inputs:
+            versionSpec: '3.11'
+            allowUnstable: true
+            addToPath: true
+            architecture: 'x64'
+
+        - task: PowerShell@2
+          inputs:
+            targetType: 'inline'
+            script: |
+              python -m pip install --upgrade pip
+              pip install --upgrade checkov
+              checkov --version
+              checkov -d $(System.DefaultWorkingDirectory)/Env/Parent_module/dev
+            
+
+
+  # - stage: TF_Init_and_Plan
+  #   dependsOn: TF_Init_and_Scanning
+  #   jobs:
+  #     - job: TF_Init_4
+  #       displayName: TF_Init_4
+  #       steps:
+  #       - task: TerraformTask@5
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'init'
+  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Parent_module/dev/'
+  #           backendServiceArm: 'Infra_Project'
+  #           backendAzureRmStorageAccountName: 'stgsujitbackend'
+  #           backendAzureRmContainerName: 'tfstatebackend'
+  #           backendAzureRmKey: '${{ parameters.tfKey }}'
+
+  #     - job: TF_Plan
+  #       dependsOn: TF_Init_4
+  #       displayName: TF_Plan
+  #       steps:
+  #       - task: TerraformTask@5
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'plan'
+  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Parent_module/dev/'
+  #           environmentServiceNameAzureRM: 'Infra_Project'
+
+
+  #       - task: PowerShell@2
+  #         inputs:
+  #           targetType: 'inline'
+  #           script: |
+  #             terraform plan -out=tfplan
+  #             terraform show -json tfplan > plan.json
+  #             terraform show tfplan > plan.txt
+
+
+        
+        
+
+  # - stage: TF_Validation
+  #   dependsOn: TF_Init_and_Plan
+  #   displayName: Manual Validation 
+  #   jobs: 
+  #     - deployment: Manual_Approval
+  #       pool: server
+  #       displayName: "Terraform Manual Validation"
+  #       environment: 'Dev'
+  #       strategy: 
+  #        runOnce:
+  #          deploy:
+  #            steps:
+  #             - task: ManualValidation@0
+  #               inputs:
+  #                 notifyUsers: 'Sujitgade@b17g24rakeshoutlook.onmicrosoft.com'
+  #                 instructions: 'Sujitgade@b17g24rakeshoutlook.onmicrosoft.com'
+  #                 onTimeout: 'resume'
+
+
+  # - stage: final_apply
+  #   dependsOn: TF_Validation
+  #   condition: succeeded()
+  #   displayName: TF_apply
+  #   jobs:
+  #     - job: TF_apply
+  #       displayName: TF_apply
+  #       steps:
+  #       - task: TerraformTask@5
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'init'
+  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Parent_module/dev/'
+  #           backendServiceArm: 'Infra_Project'
+  #           backendAzureRmStorageAccountName: 'stgsujitbackend'
+  #           backendAzureRmContainerName: 'tfstatebackend'
+  #           backendAzureRmKey: '${{ parameters.tfKey }}'
+
+
+  #       - task: AzureKeyVault@2
+  #         inputs:
+  #           azureSubscription: 'Infra_Project'
+  #           KeyVaultName: 'thisisnewkey'
+  #           SecretsFilter: 'pass'
+  #           RunAsPreJob: true
+
+
+  #       - task: TerraformTask@5
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'apply'
+  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Parent_module/dev/'
+  #           environmentServiceNameAzureRM: 'Infra_Project'
+
+  # - stage: TF_Destroy
+  #   displayName: TF_Destroy
+  #   condition: eq(${{ parameters.runDestroy }}, true) 
+  #   jobs:
+  #     - job: TF_Destroy
+  #       steps:
+  #       - task: TerraformTask@5
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'destroy'
+  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Env/Parent_module/dev/'
+  #           environmentServiceNameAzureRM: 'Infra_Project'
+
+
+
+   
+      
